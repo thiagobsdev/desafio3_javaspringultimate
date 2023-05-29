@@ -93,6 +93,5 @@ public class Client {
 				+ birthDate + ", children=" + children + "]";
 	}
 	
-	
 
 }
