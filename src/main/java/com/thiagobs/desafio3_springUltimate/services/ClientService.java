@@ -22,21 +22,26 @@ public class ClientService {
 	private ClientRepository repository;
 
 	@Transactional(readOnly = true)
-	public Page<Client> findAll(Pageable pageable) {
-		return repository.findAll(pageable);
+	public Page<ClientDto> findAll(Pageable pageable) {
+		Page<Client> result = repository.findAll(pageable);
+		return result.map(x -> new ClientDto(x));
 
 	}
 
 	@Transactional(readOnly = true)
-	public Client findById(Long id) {
-		Client client = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ID não encontrado"));
-		return client;
+	public ClientDto findById(Long id) {
+		Client client = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Id não encontrado"));
+		ClientDto dto = new ClientDto(client);
+		return dto;
 
 	}
 
 	@Transactional
-	public Client insert(Client client) {
-		return repository.save(client);
+	public ClientDto insert(ClientDto dto) {
+		Client client = new Client();
+		transferToClient(client, dto);
+		
+		return new ClientDto(client);
 	}
 
 	@Transactional
@@ -57,7 +62,7 @@ public class ClientService {
 	@Transactional
 	public void delete(Long id) {
 		if (!repository.existsById(id)) {
-			throw new ResourceNotFoundException("Recurso não encontrado");
+			throw new ResourceNotFoundException("Id não encontrado");
 		}
 
 		try {

@@ -4,13 +4,20 @@ import java.time.LocalDate;
 
 import com.thiagobs.desafio3_springUltimate.entities.Client;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+
 public class ClientDto {
 	
 	
 	private Long id;
+	
+	@NotBlank(message = "O nome não pode estar vazio")
 	private String name;
 	private String cpf;
 	private Double income;
+	
+	@PastOrPresent(message = "A idade mão pode ser data futura")
 	private LocalDate birthDate;
 	private Integer children;
 	

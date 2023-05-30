@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.thiagobs.desafio3_springUltimate.dto.ClientDto;
-import com.thiagobs.desafio3_springUltimate.entities.Client;
 import com.thiagobs.desafio3_springUltimate.services.ClientService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value="/clients")
@@ -29,34 +30,34 @@ public class ClientController {
 	
 	
 	@GetMapping
-	public ResponseEntity<Page<Client>> findAll( Pageable pageable) {
-		Page<Client> entity = service.findAll(pageable);
+	public ResponseEntity<Page<ClientDto>> findAll( Pageable pageable) {
+		Page<ClientDto> entity = service.findAll(pageable);
 		return ResponseEntity.ok(entity);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Client> findById(@PathVariable Long id) {
-		Client entity = service.findById(id);
+	public ResponseEntity<ClientDto> findById(@PathVariable (required = true) Long id ) {
+		ClientDto entity = service.findById(id);
 		return ResponseEntity.ok(entity);
 	}
 	
 	@PostMapping
-	public ResponseEntity<Client> insert( @RequestBody Client client) {
-		client = service.insert(client);
+	public ResponseEntity<ClientDto> insert( @Valid  @RequestBody ClientDto dto) {
+		dto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(client.getId()).toUri();
+				.buildAndExpand(dto.getId()).toUri();
 		
-		return ResponseEntity.created(uri).body(client);
+		return ResponseEntity.created(uri).body(dto);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<ClientDto>  update (@PathVariable Long id, @RequestBody ClientDto dto ) {
+	public ResponseEntity<ClientDto>  update (@PathVariable(required = true) Long id, @Valid @RequestBody ClientDto dto ) {
 		dto = service.update(id, dto);
 		return ResponseEntity.ok(dto);
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void>  delete ( @PathVariable Long id) {
+	public ResponseEntity<Void>  delete ( @PathVariable (required = true) Long id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
